@@ -8,10 +8,7 @@ jdk:
   - openjdk8
   - openjdk9
   - openjdk10
-<<<<<<< Upstream, based on hexdouble
-=======
   - openjdk11
->>>>>>> 41f0fb9 update supported JDK
 services:
   - docker
 before_script:
