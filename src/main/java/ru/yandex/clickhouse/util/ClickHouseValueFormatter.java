@@ -2,6 +2,7 @@ package ru.yandex.clickhouse.util;
 
 import ru.yandex.clickhouse.ClickHouseArray;
 import ru.yandex.clickhouse.ClickHouseUtil;
+import ru.yandex.clickhouse.domain.ClickHouseHexDouble;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -55,6 +56,14 @@ public final class ClickHouseValueFormatter {
 
     public static String formatDouble(double myDouble) {
         return Double.toString(myDouble);
+    }
+
+    public static String formatDoubleHasHex(double myDouble) {
+    	StringBuilder sb = new StringBuilder(Long.toHexString(Long.reverseBytes(Double.doubleToLongBits(myDouble))));
+    	while(sb.length() < 16) sb.insert(0,"0");
+    	sb.insert(0,"reinterpretAsFloat64(unhex('");
+    	sb.append("'))");
+    	return sb.toString();
     }
 
     public static String formatChar(char myChar) {
@@ -122,7 +131,9 @@ public final class ClickHouseValueFormatter {
         if (x == null) {
             return null;
         }
-        if (x instanceof Byte) {
+        if (x instanceof ClickHouseHexDouble) {
+        	return formatDouble(((ClickHouseHexDouble) x).doubleValue());
+        } else if (x instanceof Byte) {
             return formatInt(((Byte) x).intValue());
         } else if (x instanceof String) {
             return formatString((String) x);
